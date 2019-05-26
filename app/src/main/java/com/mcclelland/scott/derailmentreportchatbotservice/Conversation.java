@@ -2,6 +2,7 @@ package com.mcclelland.scott.derailmentreportchatbotservice;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,40 +15,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.ibm.cloud.sdk.core.service.exception.NotFoundException;
-import com.ibm.cloud.sdk.core.service.exception.RequestTooLargeException;
-import com.ibm.cloud.sdk.core.service.exception.ServiceResponseException;
 import com.ibm.cloud.sdk.core.service.security.IamOptions;
 import com.ibm.watson.assistant.v2.Assistant;
-import com.ibm.watson.assistant.v2.model.CreateSessionOptions;
-import com.ibm.watson.assistant.v2.model.MessageContext;
-import com.ibm.watson.assistant.v2.model.MessageContextGlobal;
-import com.ibm.watson.assistant.v2.model.MessageContextGlobalSystem;
-import com.ibm.watson.assistant.v2.model.MessageContextSkills;
-import com.ibm.watson.assistant.v2.model.MessageInput;
-import com.ibm.watson.assistant.v2.model.MessageOptions;
-import com.ibm.watson.assistant.v2.model.MessageResponse;
-import com.ibm.watson.assistant.v2.model.SessionResponse;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 
 public class Conversation extends AppCompatActivity {
 
@@ -96,12 +75,14 @@ public class Conversation extends AppCompatActivity {
             }
         });
 
-        new StartWatson().execute();
+        new StartWatson(context).execute(chatMessageLog);
 
     }
 
-    private void onItemClick(View view, int position) {
-        //Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+    private void updateChatbox(Context context, ArrayList<String> chatMessageLog){
+        recyclerViewAdapter = new RecyclerViewAdapter(context, chatMessageLog);
+        //recyclerViewAdapter.setClickListener(this);
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
 
     private interface ItemClickListener {
@@ -156,65 +137,36 @@ public class Conversation extends AppCompatActivity {
 
     }
 
-    private class StartWatson extends AsyncTask<String, Void, String> {
+    private class StartWatson extends AsyncTask<ArrayList<String>, Void, ArrayList<String>> {
+        Context context;
+
+        StartWatson(Context context){
+            this.context = context;
+        }
+
         @Override
         protected void onPreExecute(){
             //progress = ProgressDialog.show(Conversation.this, "Starting Conversation...", "Please Wait");
         }
-        protected String doInBackground(String... params) {
-            String responsePayloadString = "Failure";
-
+        protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+            final ArrayList<String> currentChatLog = params[0];
+            String responsePayloadString = "";
+            String urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/startConversation";
+            JSONObject json = new JSONObject();
             try {
-                //Instantiate connection to node js middleware server
-                URL url = new URL("https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/startConversation");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-                //urlConnection.setRequestProperty("Content-Type", "application/json");
-                //urlConnection.setRequestProperty("Accept", "application/json");
-
-                //Declare request method to be of type 'POST'
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                //Instantiate outputstream and buffered writer objects to write content to the POST request
-                OutputStream outputStream = urlConnection.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                writer.write("Send Payload");
-                writer.flush();
-                writer.close();
-
-                //After writing is complete, connect and send request to server.
-                urlConnection.connect();
-
-                int responseCode = urlConnection.getResponseCode();
-                //System.out.println(responseCode);
-                if (responseCode == 200){
-                    InputStream inputStream = urlConnection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    responsePayloadString = "";
-                    while ((responsePayloadString = reader.readLine()) != null){
-                        stringBuilder.append(responsePayloadString);
-                    }
-                    responsePayloadString = stringBuilder.toString();
-                    inputStream.close();
-                }
-                else{
-                    System.out.println(responseCode);
-                }
-                outputStream.close();
-                urlConnection.disconnect();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
+                json.put("message", "initiateConversation");
+            }catch (JSONException e){
+                throw new RuntimeException(e);
             }
+            MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+            responsePayloadString = middlewareConnection.connect();
 
-            return responsePayloadString;
+            currentChatLog.add(responsePayloadString);
+
+            return currentChatLog;
         }
-        protected void onPostExecute(String sessionId) {
-            //chatSessionId = sessionId;
+        protected void onPostExecute(ArrayList<String> currentChatLog) {
+            updateChatbox(context, currentChatLog);
         }
 
     }
@@ -239,122 +191,45 @@ public class Conversation extends AppCompatActivity {
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
-            try {
-                //Instantiate connection to node js middleware server
-                URL url = new URL("https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/continueConversation");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-                //urlConnection.setRequestProperty("Content-Type", "application/json");
-                //urlConnection.setRequestProperty("Accept", "application/json");
+            String urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/continueConversation";
+            MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+            responsePayloadString = middlewareConnection.connect();
 
-                //Declare request method to be of type 'POST'
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                //Instantiate outputstream and buffered writer objects to write content to the POST request
-                OutputStream outputStream = urlConnection.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                writer.write(json.toString());
-                writer.flush();
-                writer.close();
-
-                //After writing is complete, connect and send request to server.
-                urlConnection.connect();
-
-                int responseCode = urlConnection.getResponseCode();
-                System.out.println(responseCode);
-                if (responseCode == 200){
-                    InputStream inputStream = urlConnection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    responsePayloadString = "";
-                    while ((responsePayloadString = reader.readLine()) != null){
-                        stringBuilder.append(responsePayloadString);
-                    }
-                    responsePayloadString = stringBuilder.toString();
-                    inputStream.close();
-                    if (responsePayloadString.equals("queryDiscovery")){
-                        secondCall = true;
-                    }
-                    else {
-                        currentChatLog.add(editMessage.getText().toString());
-                        currentChatLog.add(responsePayloadString);
-                    }
+            if (responsePayloadString.contains(";uniqueDelimiter;")){
+                String unpackedPayload[] = responsePayloadString.split(";uniqueDelimiter;");
+                if (unpackedPayload[0].equals("generalDiscoveryQuery")){
+                    Bundle generalBundle = new Bundle();
+                    generalBundle.putString("query", editMessage.getText().toString());
+                    Intent i = new Intent(Conversation.this, GeneralQueryResult.class);
+                    i.putExtras(generalBundle);
+                    startActivity(i);
                 }
-                else{
-                    System.out.println(responseCode);
-                }
-
-                outputStream.close();
-                urlConnection.disconnect();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-
-            if (secondCall){
-                try {
-                    //Instantiate connection to node js middleware server
-                    URL url = new URL("https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/queryDiscovery");
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-                    //urlConnection.setRequestProperty("Content-Type", "application/json");
-                    //urlConnection.setRequestProperty("Accept", "application/json");
-
-                    //Declare request method to be of type 'POST'
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setDoOutput(true);
-                    urlConnection.setDoInput(true);
-                    //Instantiate outputstream and buffered writer objects to write content to the POST request
-                    OutputStream outputStream = urlConnection.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                    writer.write(json.toString());
-                    writer.flush();
-                    writer.close();
-
-                    //After writing is complete, connect and send request to server.
-                    urlConnection.connect();
-
-                    int responseCode = urlConnection.getResponseCode();
-                    System.out.println(responseCode);
-                    if (responseCode == 200){
-                        InputStream inputStream = urlConnection.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-                        StringBuilder stringBuilder = new StringBuilder();
-                        responsePayloadString = "";
-                        while ((responsePayloadString = reader.readLine()) != null){
-                            stringBuilder.append(responsePayloadString);
-                        }
-                        responsePayloadString = stringBuilder.toString();
-                        inputStream.close();
-
-                        currentChatLog.add(editMessage.getText().toString());
-                        currentChatLog.add(responsePayloadString);
+                else if(unpackedPayload[0].equals("specificDiscoveryQuery")){
+                    try {
+                        json.put("filename", unpackedPayload[2]);
+                    }catch (JSONException e){
+                        throw new RuntimeException(e);
                     }
-                    else{
-                        System.out.println(responseCode);
-                    }
+                    urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/getDocumentId";
+                    middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+                    responsePayloadString = middlewareConnection.connect();
 
-                    outputStream.close();
-                    urlConnection.disconnect();
 
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }catch(IOException e){
-                    e.printStackTrace();
+
+                    currentChatLog.add(editMessage.getText().toString());
+                    currentChatLog.add(responsePayloadString);
                 }
             }
-
+            else{
+                currentChatLog.add(editMessage.getText().toString());
+                currentChatLog.add(responsePayloadString);
+            }
 
             return currentChatLog;
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
-            chatMessageLog = currentChatLog;
-            recyclerViewAdapter = new RecyclerViewAdapter(context, chatMessageLog);
-            //recyclerViewAdapter.setClickListener(this);
-            recyclerView.setAdapter(recyclerViewAdapter);
+            updateChatbox(context, currentChatLog);
         }
 
     }

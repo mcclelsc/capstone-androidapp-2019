@@ -43,7 +43,7 @@ public class GeneralQueryResult extends AppCompatActivity {
             String generalQuery = params[0];
             JSONObject json = new JSONObject();
 
-            String urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/queryDiscovery";
+            String urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/generalDiscoveryQuery";
             String responsePayloadString = "";
             try {
                 json.put("message", generalQuery);
@@ -52,7 +52,6 @@ public class GeneralQueryResult extends AppCompatActivity {
             }
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
-            System.out.println(responsePayloadString);
             return responsePayloadString;
         }
         protected void onPostExecute(String payload) {
