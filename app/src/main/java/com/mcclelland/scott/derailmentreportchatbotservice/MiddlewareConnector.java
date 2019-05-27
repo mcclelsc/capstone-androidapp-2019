@@ -40,7 +40,6 @@ public class MiddlewareConnector {
             urlConnection.connect();
 
             int responseCode = urlConnection.getResponseCode();
-            System.out.println(responseCode);
             if (responseCode == 200){
                 InputStream inputStream = urlConnection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));

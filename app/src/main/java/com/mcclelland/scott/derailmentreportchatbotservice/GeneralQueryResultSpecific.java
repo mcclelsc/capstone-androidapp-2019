@@ -34,9 +34,11 @@ public class GeneralQueryResultSpecific extends AppCompatActivity {
     }
 
     private void startSpecificConversation(String documentId, String documentFilename){
-        Intent intent = new Intent(GeneralQueryResultSpecific.this, GeneralQueryResultSpecific.class);
-        intent.putExtra("documentId", documentId);
-        intent.putExtra("documentFilename", documentFilename);
+        Bundle contentForConversation = new Bundle();
+        contentForConversation.putString("documentId", documentId);
+        contentForConversation.putString("documentFilename", documentFilename);
+        Intent intent = new Intent(GeneralQueryResultSpecific.this, Conversation.class);
+        intent.putExtras(contentForConversation);
         startActivity(intent);
     }
 }

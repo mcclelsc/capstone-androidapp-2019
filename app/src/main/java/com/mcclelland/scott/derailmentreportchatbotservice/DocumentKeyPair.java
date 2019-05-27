@@ -1,8 +1,8 @@
 package com.mcclelland.scott.derailmentreportchatbotservice;
 
 public class DocumentKeyPair {
-    int viewId;
-    int documentListId;
+    private int viewId;
+    private int documentListId;
     public DocumentKeyPair(int viewId, int documentListId){
         this.viewId = viewId;
         this.documentListId = documentListId;

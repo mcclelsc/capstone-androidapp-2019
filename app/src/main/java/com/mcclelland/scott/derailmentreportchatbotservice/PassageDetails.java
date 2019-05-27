@@ -1,8 +1,8 @@
 package com.mcclelland.scott.derailmentreportchatbotservice;
 
 public class PassageDetails {
-    String passageScore;
-    String passageText;
+    private String passageScore;
+    private String passageText;
     public PassageDetails(String passageScore, String passageText){
         this.passageScore = passageScore;
         this.passageText = passageText;

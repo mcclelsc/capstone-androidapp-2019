@@ -208,7 +208,6 @@ public class Conversation extends AppCompatActivity {
             String urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
-            System.out.println(responsePayloadString);
             if (responsePayloadString.equals("generalDiscoveryQuery")) {
                 Bundle generalBundle = new Bundle();
                 generalBundle.putString("query", enteredMessage);
@@ -256,22 +255,32 @@ public class Conversation extends AppCompatActivity {
                 responsePayloadString = middlewareConnection.connect();
 
                 JSONObject passagesObject;
-                JSONObject passageTemp;
                 JSONArray passagesArray;
                 try {
-                    passagesObject = new JSONObject(responsePayloadString);
-                    passagesArray = passagesObject.getJSONArray("passages");
+                    json.put("message", "discoveryCycle");
+                    passagesArray = new JSONArray(responsePayloadString);
                     passageCollection = new ArrayList<PassageDetails>();
                     for (int i = 0; i < passagesArray.length(); i++){
-                        passageTemp = passagesArray.getJSONObject(i);
-                        passageCollection.add(new PassageDetails(passageTemp.getString("passage_score"), passageTemp.getString("passage_text")));
+                        passagesObject = passagesArray.getJSONObject(i);
+                        passageCollection.add(new PassageDetails(passagesObject.getString("passage_score"), passagesObject.getString("passage_text")));
                     }
                 }catch (JSONException e){
                     throw new RuntimeException(e);
                 }
 
                 currentChatLog.add(enteredMessage);
-                currentChatLog.add("");
+                String presentPassageResults = "The Top Matching Results:\n";
+                for (int i = 0; i < passageCollection.size(); i++){
+                    presentPassageResults += "Result " + (i+1) + ":\n" + passageCollection.get(i).getPassageText();
+                    if (passageCollection.size() - 1 != i){
+                        presentPassageResults += "\n";
+                    }
+                }
+                currentChatLog.add(presentPassageResults);
+                urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
+                middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+                responsePayloadString = middlewareConnection.connect();
+                currentChatLog.add(responsePayloadString);
             }
             else{
                 currentChatLog.add(enteredMessage);

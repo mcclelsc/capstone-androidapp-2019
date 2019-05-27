@@ -3,10 +3,10 @@ package com.mcclelland.scott.derailmentreportchatbotservice;
 import java.io.Serializable;
 
 public class DocumentDetails implements Serializable {
-    String id;
-    String filename;
-    String text;
-    int passageCount;
+    private String id;
+    private String filename;
+    private String text;
+    private int passageCount;
 
     public DocumentDetails(String id, String filename, String text){
         this.id = id;
