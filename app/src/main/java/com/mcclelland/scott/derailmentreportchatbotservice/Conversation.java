@@ -76,6 +76,11 @@ public class Conversation extends AppCompatActivity {
             }
         });
 
+        Bundle checkBundle = getIntent().getExtras();
+        if (checkBundle != null){
+            documentFileId = checkBundle.getString("documentId");
+            documentFilename = checkBundle.getString("documentFilename");
+        }
         new StartWatson(context).execute(chatMessageLog);
 
     }
@@ -155,12 +160,20 @@ public class Conversation extends AppCompatActivity {
             String urlString = "https://capstone-middleware-2019.herokuapp.com/startConversation";
             JSONObject json = new JSONObject();
             try {
-                json.put("message", "initiateConversation");
+                if (documentFileId.equals("")){
+                    json.put("message", "initiateConversation");
+                }
+                else{
+                    json.put("message", "alreadyHaveDocumentId");
+                }
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
+            if (responsePayloadString.equals("How may I help you with the chosen report?")){
+                responsePayloadString = "How many I help you with report " + documentFilename + "?";
+            }
 
             currentChatLog.add(responsePayloadString);
 

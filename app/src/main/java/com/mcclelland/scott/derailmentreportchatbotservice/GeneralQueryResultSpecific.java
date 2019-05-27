@@ -28,14 +28,15 @@ public class GeneralQueryResultSpecific extends AppCompatActivity {
         btnStartNewConversation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startSpecificConversation(chosenDocument.getId());
+                startSpecificConversation(chosenDocument.getId(), chosenDocument.getFilename());
             }
         });
     }
 
-    private void startSpecificConversation(String documentId){
+    private void startSpecificConversation(String documentId, String documentFilename){
         Intent intent = new Intent(GeneralQueryResultSpecific.this, GeneralQueryResultSpecific.class);
         intent.putExtra("documentId", documentId);
+        intent.putExtra("documentFilename", documentFilename);
         startActivity(intent);
     }
 }
