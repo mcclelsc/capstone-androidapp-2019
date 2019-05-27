@@ -40,6 +40,7 @@ public class MiddlewareConnector {
             urlConnection.connect();
 
             int responseCode = urlConnection.getResponseCode();
+            //If the network call was successful, build the response into a single string.
             if (responseCode == 200){
                 InputStream inputStream = urlConnection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
@@ -52,6 +53,7 @@ public class MiddlewareConnector {
                 inputStream.close();
 
             }
+            //Otherwise, report error code
             else{
                 System.out.println(responseCode);
             }

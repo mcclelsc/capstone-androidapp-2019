@@ -42,7 +42,9 @@ public class Conversation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
-
+        //The Watson Assistant has specific parameters that need to be set
+        //so API calls can be sent to the correct chatbot
+        //Watson Assistant Setup Begins
         IamOptions options = new IamOptions.Builder()
                 .apiKey("jP5yGzV5NNzsfS7NG5xmDg96b9Dj6_t0kug5Kg6nEQUM")
                 .build();
@@ -55,41 +57,45 @@ public class Conversation extends AppCompatActivity {
         headers.put("X-Watson-Learning-Opt-Out", "true");
 
         chatAssistant.setDefaultHeaders(headers);
+        //Watson Assistant Setup Ends
 
         chatMessageLog = new ArrayList<>();
 
         Button sendButton = findViewById(R.id.sendMessage);
         editMessage = findViewById(R.id.editMessage);
+        //Chat content will be hosted by a recyclerview, and must be
+        //prepared accordingly
         recyclerView = findViewById(R.id.chatBox);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAdapter = new RecyclerViewAdapter(this, chatMessageLog);
-        //recyclerViewAdapter.setClickListener(this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         final Context context = this;
+        //When the 'Send' button is clicked, pass context and chat log to MessageWatson AsyncTask
         sendButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 new MessageWatson(context).execute(chatMessageLog);
             }
         });
-
+        //If this Activity is started due to being redirected from the GeneralQueryResultSpecific Activity...
         Bundle checkBundle = getIntent().getExtras();
         if (checkBundle != null){
+            //Store the desired report's Watson Discovery ID and filename
             documentFileId = checkBundle.getString("documentId");
             documentFilename = checkBundle.getString("documentFilename");
         }
+        //Start the chat
         new StartWatson(context).execute(chatMessageLog);
 
     }
-
+    //Exterior method that the MessageWatson AsyncTask will call when the
+    //recyclerview needs to be updated
     private void updateChatbox(Context context, ArrayList<String> chatMessageLog){
         recyclerViewAdapter = new RecyclerViewAdapter(context, chatMessageLog);
-        //recyclerViewAdapter.setClickListener(this);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
-
+    //Class and supporting interface for the recyclerview
     private interface ItemClickListener {
         void onItemClick(View view, int position);
     }
@@ -141,7 +147,11 @@ public class Conversation extends AppCompatActivity {
         }
 
     }
-
+    /*The StartWatson AsyncTask is similar to the later MessageWatson, albeit
+    *much more trimmed. They both make network calls and pass specific data to the middleware
+    *However, before communicating with Watson Assistant a session has to be started
+    *The StartWatson's main task is to cleanly start the session with the chatbot before
+    the user will even notice, able to start chatting once the activity loads.*/
     private class StartWatson extends AsyncTask<ArrayList<String>, Void, ArrayList<String>> {
         Context context;
 
@@ -151,13 +161,16 @@ public class Conversation extends AppCompatActivity {
 
         @Override
         protected void onPreExecute(){
-            //progress = ProgressDialog.show(Conversation.this, "Starting Conversation...", "Please Wait");
+
         }
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+            //Retrieve the chatMessageLog Arraylist and set destination URL
             final ArrayList<String> currentChatLog = params[0];
             String responsePayloadString = "";
             String urlString = "https://capstone-middleware-2019.herokuapp.com/startConversation";
             JSONObject json = new JSONObject();
+            //If this activity starts from the Main Acitivty, presume fresh conversation.
+            //Otherwise, use the chatbot's other entry point to continue the specific question cycle
             try {
                 if (documentFileId.equals("")){
                     json.put("message", "initiateConversation");
@@ -168,8 +181,12 @@ public class Conversation extends AppCompatActivity {
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
+            //Send request to middleware with the populated json payload
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
+            //If the response is from the 'alreadyHaveDocumentId' path,
+            //Then update the response here. This data cannot be passed to the
+            //Watson Assistant, so the topic report's filename is instead presented here.
             if (responsePayloadString.equals("How may I help you with the chosen report?")){
                 responsePayloadString = "How many I help you with report " + documentFilename + "?";
             }
@@ -179,6 +196,7 @@ public class Conversation extends AppCompatActivity {
             return currentChatLog;
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
+            //Update recyclerview
             updateChatbox(context, currentChatLog);
         }
 
@@ -192,22 +210,30 @@ public class Conversation extends AppCompatActivity {
         }
         @Override
         protected void onPreExecute(){
-            //progress = ProgressDialog.show(Conversation.this, "Starting Conversation...", "Please Wait");
+
         }
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
+            //Unpack the chatMessageLog Arraylist so it can be updated later
             final ArrayList<String> currentChatLog = params[0];
             String responsePayloadString = "";
             String enteredMessage = editMessage.getText().toString();
             JSONObject json = new JSONObject();
+            //Attach the user's message to the request payload's JSON object
+            //for the middleware to receive
             try {
                 json.put("message", enteredMessage);
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
-
+            //Send request to the middleware and receive response as a string.
             String urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
+
+            //Handling different responses from chatbot received from the middleware
+
+            //When the chatbot has identified that the user needs to make
+            //a general query to Discovery, prepare intent to redirect user
             if (responsePayloadString.equals("generalDiscoveryQuery")) {
                 Bundle generalBundle = new Bundle();
                 generalBundle.putString("query", enteredMessage);
@@ -215,20 +241,26 @@ public class Conversation extends AppCompatActivity {
                 i.putExtras(generalBundle);
                 startActivity(i);
             }
+            //When the chatbot realizes it needs to search for a report...
             else if (responsePayloadString.contains("Give me a moment to find that report.")){
+                //Unpack the response payload
                 String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
                 currentChatLog.add(enteredMessage);
                 currentChatLog.add(splitString[0]);
                 documentFilename = splitString[1];
+                //Attach the desired filename to the next request
                 try {
                     json.put("filename", splitString[1]);
                 }catch (JSONException e){
                     throw new RuntimeException(e);
                 }
+                //Send request to the 'getDocumentId' function, which will return a document ID
+                //based on the filename.
                 urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 splitString = responsePayloadString.split(";uniqueDelimiter;");
+                //If the report is found, unpack received document id
                 if (splitString[0].equals("reportFound")){
                     documentFileId = splitString[1];
                 }
@@ -238,12 +270,19 @@ public class Conversation extends AppCompatActivity {
                 }catch (JSONException e){
                     throw new RuntimeException(e);
                 }
+                //Send the Watson Assistant the results, and it will respond with the
+                //Appropriate answer if the document was successfully found,
+                //Or no document of that name could be found. The Watson assistant must be informed
+                //so the user's place in the conversation is not lost.
                 urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 currentChatLog.add(responsePayloadString);
             }
+            //When the Watson Assistant determines that the user is ready to make
+            //a query about a specific report...
             else if(responsePayloadString.equals("specificDiscoveryQuery")){
+                //Send document's ID to the middleware
                 try {
                     json.put("documentId", documentFileId);
                 }catch (JSONException e){
@@ -254,6 +293,7 @@ public class Conversation extends AppCompatActivity {
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
 
+                //Unpack the results of the user's query
                 JSONObject passagesObject;
                 JSONArray passagesArray;
                 try {
@@ -267,7 +307,7 @@ public class Conversation extends AppCompatActivity {
                 }catch (JSONException e){
                     throw new RuntimeException(e);
                 }
-
+                //Print the passage results to the chat window
                 currentChatLog.add(enteredMessage);
                 String presentPassageResults = "The Top Matching Results:\n";
                 for (int i = 0; i < passageCollection.size(); i++){
@@ -277,11 +317,14 @@ public class Conversation extends AppCompatActivity {
                     }
                 }
                 currentChatLog.add(presentPassageResults);
+                //Notify the Watson Assistant that the user has been given the related passages
+                //and to continue the conversation
                 urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 currentChatLog.add(responsePayloadString);
             }
+            //When the Watson Assistant does not need to call Discovery, continue the conversation.
             else{
                 currentChatLog.add(enteredMessage);
                 currentChatLog.add(responsePayloadString);
@@ -290,6 +333,7 @@ public class Conversation extends AppCompatActivity {
             return currentChatLog;
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
+            //Update the recycleview, reset the editMessage view
             updateChatbox(context, currentChatLog);
             editMessage.setText("");
         }

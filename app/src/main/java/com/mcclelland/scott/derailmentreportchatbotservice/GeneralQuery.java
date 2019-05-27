@@ -21,12 +21,16 @@ public class GeneralQuery extends AppCompatActivity {
 
         Button btnSubmit = (Button)findViewById(R.id.btnQuerySubmit);
         final EditText editGeneralQuery = (EditText)findViewById(R.id.editGeneralQuery);
-
+        //Spinner (dropdown) wigits need their own adapters to populate their rows.
+        //Below the adapter populates itself based on a string_array that can be found
+        //under /res/values/strings.xml
         final Spinner spinnerSuggestedQueries = (Spinner)findViewById(R.id.spinnerSuggestedQueries);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.suggested_questions, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSuggestedQueries.setAdapter(spinnerAdapter);
-
+        //Spinners have a strange functionality of their rows being called both when clicked,
+        //and when the acitivty is being created. However unlike the OnItemSelected Event,
+        //the Touch event only fires during user press.
         spinnerSuggestedQueries.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -39,6 +43,7 @@ public class GeneralQuery extends AppCompatActivity {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //When touch event sets boolean value to true, populate the editGeneralQuery view
                 if (realUserSelect){
                     if (i == 0){
                         editGeneralQuery.setText("");

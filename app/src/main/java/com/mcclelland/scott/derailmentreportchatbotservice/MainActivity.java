@@ -30,15 +30,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    //Send user directly to conversation
     private void sendToConversation(){
-        Intent i = new Intent(MainActivity.this, Conversation.class);
-        startActivity(i);
+        Intent intent = new Intent(MainActivity.this, Conversation.class);
+        startActivity(intent);
     }
-
+    //Send user to the general query activity
     private void sendToGeneralQuery(){
-        Intent i = new Intent(MainActivity.this, GeneralQuery.class);
-        startActivity(i);
+        Intent intent = new Intent(MainActivity.this, GeneralQuery.class);
+        startActivity(intent);
     }
 
 }
