@@ -26,12 +26,12 @@ public class GeneralQuery extends AppCompatActivity {
     }
 
     private void sendToGeneralQueryResult(EditText editText){
-        if (editText.toString().equals("") || editText.toString().equals(" ")){
+        if (editText.getText().toString().equals("") || editText.getText().toString().equals(" ")){
 
         }
         else{
             Bundle generalBundle = new Bundle();
-            generalBundle.putString("query", editText.toString());
+            generalBundle.putString("query", editText.getText().toString());
             Intent i = new Intent(GeneralQuery.this, GeneralQueryResult.class);
             i.putExtras(generalBundle);
             startActivity(i);

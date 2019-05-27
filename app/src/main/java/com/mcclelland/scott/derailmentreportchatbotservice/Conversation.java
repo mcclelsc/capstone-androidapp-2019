@@ -196,31 +196,42 @@ public class Conversation extends AppCompatActivity {
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
             System.out.println(responsePayloadString);
-            if (responsePayloadString.contains(";uniqueDelimiter;")){
-                String unpackedPayload[] = responsePayloadString.split(";uniqueDelimiter;");
-                System.out.println(unpackedPayload[0]);
-                if (unpackedPayload[0].equals("generalDiscoveryQuery")){
-                    Bundle generalBundle = new Bundle();
-                    generalBundle.putString("query", editMessage.getText().toString());
-                    Intent i = new Intent(Conversation.this, GeneralQueryResult.class);
-                    i.putExtras(generalBundle);
-                    startActivity(i);
+            if (responsePayloadString.equals("generalDiscoveryQuery")) {
+                Bundle generalBundle = new Bundle();
+                generalBundle.putString("query", editMessage.getText().toString());
+                Intent i = new Intent(Conversation.this, GeneralQueryResult.class);
+                i.putExtras(generalBundle);
+                startActivity(i);
+            }
+            else if (responsePayloadString.contains("Give me a moment to find that report.")){
+                String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
+                currentChatLog.add(editMessage.getText().toString());
+                currentChatLog.add(splitString[0]);
+                try {
+                    json.put("filename", splitString[1]);
+                }catch (JSONException e){
+                    throw new RuntimeException(e);
                 }
-                else if(unpackedPayload[0].equals("specificDiscoveryQuery")){
-                    try {
-                        json.put("filename", unpackedPayload[2]);
-                    }catch (JSONException e){
-                        throw new RuntimeException(e);
-                    }
-                    urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
-                    middlewareConnection = new MiddlewareConnector(urlString, json.toString());
-                    responsePayloadString = middlewareConnection.connect();
+                urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
+                middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+                responsePayloadString = middlewareConnection.connect();
 
 
-
-                    currentChatLog.add(editMessage.getText().toString());
-                    currentChatLog.add(responsePayloadString);
+                currentChatLog.add(responsePayloadString);
+            }
+            else if(responsePayloadString.contains("specificDiscoveryQuery")){
+                String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
+                try {
+                    json.put("filename", splitString[1]);
+                }catch (JSONException e){
+                    throw new RuntimeException(e);
                 }
+                urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
+                middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+                responsePayloadString = middlewareConnection.connect();
+
+                currentChatLog.add(editMessage.getText().toString());
+                currentChatLog.add(responsePayloadString);
             }
             else{
                 currentChatLog.add(editMessage.getText().toString());

@@ -86,6 +86,7 @@ public class GeneralQueryResult extends AppCompatActivity {
                 TextView addedText;
                 String exampleText = "";
                 int generatedId = 0;
+                System.out.println(documentList.size());
                 for (int i = 0; i < documentList.size(); i++){
                     exampleText = "";
                     addedText = new TextView(context);
@@ -98,7 +99,7 @@ public class GeneralQueryResult extends AppCompatActivity {
                         set.connect(addedText.getId(), ConstraintSet.TOP, R.id.textMatchedQuery, ConstraintSet.TOP, 60);
                     }
                     else{
-                        set.connect(addedText.getId(), ConstraintSet.TOP, documentKeyPairs.get(i-1).getViewId(), ConstraintSet.TOP, 60);
+                        set.connect(addedText.getId(), ConstraintSet.TOP, documentKeyPairs.get(i-1).getViewId(), ConstraintSet.BOTTOM, 60);
                     }
 
                     //set.connect(addedText.getId(), ConstraintSet.START, layout.getId(), ConstraintSet.START, 60);
