@@ -36,7 +36,8 @@ public class Conversation extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<String> chatMessageLog;
     Assistant chatAssistant;
-    String chatSessionId;
+    String documentFilename = "";
+    String documentFileId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,11 +185,10 @@ public class Conversation extends AppCompatActivity {
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
             final ArrayList<String> currentChatLog = params[0];
             String responsePayloadString = "";
-            String documentFilename = "";
-            String documentFileId = "";
+            String enteredMessage = editMessage.getText().toString();
             JSONObject json = new JSONObject();
             try {
-                json.put("message", editMessage.getText().toString());
+                json.put("message", enteredMessage);
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
@@ -199,14 +199,14 @@ public class Conversation extends AppCompatActivity {
             System.out.println(responsePayloadString);
             if (responsePayloadString.equals("generalDiscoveryQuery")) {
                 Bundle generalBundle = new Bundle();
-                generalBundle.putString("query", editMessage.getText().toString());
+                generalBundle.putString("query", enteredMessage);
                 Intent i = new Intent(Conversation.this, GeneralQueryResult.class);
                 i.putExtras(generalBundle);
                 startActivity(i);
             }
             else if (responsePayloadString.contains("Give me a moment to find that report.")){
                 String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
-                currentChatLog.add(editMessage.getText().toString());
+                currentChatLog.add(enteredMessage);
                 currentChatLog.add(splitString[0]);
                 documentFilename = splitString[1];
                 try {
@@ -218,7 +218,9 @@ public class Conversation extends AppCompatActivity {
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 splitString = responsePayloadString.split(";uniqueDelimiter;");
-                documentFileId = splitString[1];
+                if (splitString[0].equals("reportFound")){
+                    documentFileId = splitString[1];
+                }
                 try {
                     json.put("message", splitString[0]);
                     json.remove("filename");
@@ -231,16 +233,21 @@ public class Conversation extends AppCompatActivity {
                 currentChatLog.add(responsePayloadString);
             }
             else if(responsePayloadString.equals("specificDiscoveryQuery")){
+                try {
+                    json.put("documentId", documentFileId);
+                }catch (JSONException e){
+                    throw new RuntimeException(e);
+                }
 
                 urlString = "https://capstone-middleware-2019.herokuapp.com/specificDiscoveryQuery";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
 
-                currentChatLog.add(editMessage.getText().toString());
+                currentChatLog.add(enteredMessage);
                 currentChatLog.add(responsePayloadString);
             }
             else{
-                currentChatLog.add(editMessage.getText().toString());
+                currentChatLog.add(enteredMessage);
                 currentChatLog.add(responsePayloadString);
             }
 
@@ -248,6 +255,7 @@ public class Conversation extends AppCompatActivity {
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
             updateChatbox(context, currentChatLog);
+            editMessage.setText("");
         }
 
     }
