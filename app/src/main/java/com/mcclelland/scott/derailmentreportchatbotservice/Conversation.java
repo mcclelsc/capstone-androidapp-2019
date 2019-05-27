@@ -1,6 +1,5 @@
 package com.mcclelland.scott.derailmentreportchatbotservice;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 import com.ibm.cloud.sdk.core.service.security.IamOptions;
 import com.ibm.watson.assistant.v2.Assistant;
 
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,11 +29,11 @@ import java.util.Map;
 
 public class Conversation extends AppCompatActivity {
 
-    private ProgressDialog progress;
     RecyclerViewAdapter recyclerViewAdapter;
     EditText editMessage;
     RecyclerView recyclerView;
     ArrayList<String> chatMessageLog;
+    ArrayList<PassageDetails> passageCollection;
     Assistant chatAssistant;
     String documentFilename = "";
     String documentFileId = "";
@@ -256,8 +255,23 @@ public class Conversation extends AppCompatActivity {
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
 
+                JSONObject passagesObject;
+                JSONObject passageTemp;
+                JSONArray passagesArray;
+                try {
+                    passagesObject = new JSONObject(responsePayloadString);
+                    passagesArray = passagesObject.getJSONArray("passages");
+                    passageCollection = new ArrayList<PassageDetails>();
+                    for (int i = 0; i < passagesArray.length(); i++){
+                        passageTemp = passagesArray.getJSONObject(i);
+                        passageCollection.add(new PassageDetails(passageTemp.getString("passage_score"), passageTemp.getString("passage_text")));
+                    }
+                }catch (JSONException e){
+                    throw new RuntimeException(e);
+                }
+
                 currentChatLog.add(enteredMessage);
-                currentChatLog.add(responsePayloadString);
+                currentChatLog.add("");
             }
             else{
                 currentChatLog.add(enteredMessage);
