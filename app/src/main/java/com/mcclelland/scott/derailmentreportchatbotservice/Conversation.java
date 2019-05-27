@@ -151,7 +151,7 @@ public class Conversation extends AppCompatActivity {
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
             final ArrayList<String> currentChatLog = params[0];
             String responsePayloadString = "";
-            String urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/startConversation";
+            String urlString = "https://capstone-middleware-2019.herokuapp.com/startConversation";
             JSONObject json = new JSONObject();
             try {
                 json.put("message", "initiateConversation");
@@ -192,12 +192,13 @@ public class Conversation extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
 
-            String urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/continueConversation";
+            String urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
-
+            System.out.println(responsePayloadString);
             if (responsePayloadString.contains(";uniqueDelimiter;")){
                 String unpackedPayload[] = responsePayloadString.split(";uniqueDelimiter;");
+                System.out.println(unpackedPayload[0]);
                 if (unpackedPayload[0].equals("generalDiscoveryQuery")){
                     Bundle generalBundle = new Bundle();
                     generalBundle.putString("query", editMessage.getText().toString());
@@ -211,7 +212,7 @@ public class Conversation extends AppCompatActivity {
                     }catch (JSONException e){
                         throw new RuntimeException(e);
                     }
-                    urlString = "https://capstone-middleware-capstone-middleware.1d35.starter-us-east-1.openshiftapps.com/getDocumentId";
+                    urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
                     middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                     responsePayloadString = middlewareConnection.connect();
 
