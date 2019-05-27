@@ -184,7 +184,8 @@ public class Conversation extends AppCompatActivity {
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
             final ArrayList<String> currentChatLog = params[0];
             String responsePayloadString = "";
-            Boolean secondCall = false;
+            String documentFilename = "";
+            String documentFileId = "";
             JSONObject json = new JSONObject();
             try {
                 json.put("message", editMessage.getText().toString());
@@ -207,6 +208,7 @@ public class Conversation extends AppCompatActivity {
                 String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
                 currentChatLog.add(editMessage.getText().toString());
                 currentChatLog.add(splitString[0]);
+                documentFilename = splitString[1];
                 try {
                     json.put("filename", splitString[1]);
                 }catch (JSONException e){
@@ -215,18 +217,22 @@ public class Conversation extends AppCompatActivity {
                 urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
-
-
-                currentChatLog.add(responsePayloadString);
-            }
-            else if(responsePayloadString.contains("specificDiscoveryQuery")){
-                String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
+                splitString = responsePayloadString.split(";uniqueDelimiter;");
+                documentFileId = splitString[1];
                 try {
-                    json.put("filename", splitString[1]);
+                    json.put("message", splitString[0]);
+                    json.remove("filename");
                 }catch (JSONException e){
                     throw new RuntimeException(e);
                 }
-                urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
+                urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
+                middlewareConnection = new MiddlewareConnector(urlString, json.toString());
+                responsePayloadString = middlewareConnection.connect();
+                currentChatLog.add(responsePayloadString);
+            }
+            else if(responsePayloadString.equals("specificDiscoveryQuery")){
+
+                urlString = "https://capstone-middleware-2019.herokuapp.com/specificDiscoveryQuery";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
 
