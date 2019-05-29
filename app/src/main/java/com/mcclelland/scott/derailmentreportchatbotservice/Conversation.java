@@ -2,11 +2,15 @@ package com.mcclelland.scott.derailmentreportchatbotservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,7 +125,37 @@ public class Conversation extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position){
             String message = chatData.get(position);
-            holder.rowTextView.setText(message);
+            SpannableStringBuilder messageToHighlight = new SpannableStringBuilder(message);
+            int stringIndexStart = 0;
+            int stringIndexEnd = 0;
+            stringIndexStart = message.indexOf("<span>", stringIndexStart);
+            stringIndexEnd = message.indexOf("</span>", stringIndexEnd);
+            while (stringIndexStart != -1) {
+                messageToHighlight.setSpan(new BackgroundColorSpan(Color.YELLOW), stringIndexStart+6, stringIndexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                stringIndexStart += 6;
+                stringIndexStart = message.indexOf("<span>", stringIndexStart);
+                stringIndexEnd += 7;
+                stringIndexEnd = message.indexOf("</span>", stringIndexEnd);
+
+            }
+            stringIndexStart = 0;
+            stringIndexEnd = 0;
+            stringIndexStart = messageToHighlight.toString().indexOf("<span>", stringIndexStart);
+
+            while (stringIndexStart != -1){
+                messageToHighlight.delete(stringIndexStart, stringIndexStart+6);
+                stringIndexStart = 0;
+                stringIndexStart = messageToHighlight.toString().indexOf("<span>", stringIndexStart);
+
+            }
+
+            stringIndexEnd = messageToHighlight.toString().indexOf("</span>", stringIndexEnd);
+            while (stringIndexEnd != -1){
+                messageToHighlight.delete(stringIndexEnd, stringIndexEnd+7);
+                stringIndexEnd = 0;
+                stringIndexEnd = messageToHighlight.toString().indexOf("</span>", stringIndexEnd);
+            }
+            holder.rowTextView.setText(messageToHighlight);
         }
 
         @Override
@@ -297,10 +331,14 @@ public class Conversation extends AppCompatActivity {
 
                 //Unpack the results of the user's query
                 JSONObject passagesObject;
+                JSONArray payloadArray;
                 JSONArray passagesArray;
+                JSONArray highlightedTermsArray;
                 try {
                     json.put("message", "discoveryCycle");
-                    passagesArray = new JSONArray(responsePayloadString);
+                    payloadArray = new JSONArray(responsePayloadString);
+                    passagesArray = payloadArray.getJSONArray(0);
+                    highlightedTermsArray = payloadArray.getJSONArray(1);
                     passageCollection = new ArrayList<PassageDetails>();
                     for (int i = 0; i < passagesArray.length(); i++){
                         passagesObject = passagesArray.getJSONObject(i);
@@ -311,9 +349,19 @@ public class Conversation extends AppCompatActivity {
                 }
                 //Print the passage results to the chat window
                 currentChatLog.add(enteredMessage);
+                String htmlFormattedResult;
+                System.out.println(highlightedTermsArray);
                 String presentPassageResults = "The Top Matching Results:\n";
                 for (int i = 0; i < passageCollection.size(); i++){
-                    presentPassageResults += "Result " + (i+1) + ":\n" + passageCollection.get(i).getPassageText();
+                    htmlFormattedResult = passageCollection.get(i).getPassageText();
+                    for (int j = 0; j < highlightedTermsArray.length(); j++){
+                        try{
+                            htmlFormattedResult = htmlFormattedResult.replace(highlightedTermsArray.get(j).toString(), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
+                        }catch (JSONException e){
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    presentPassageResults += "Result " + (i+1) + ":\n" + htmlFormattedResult;
                     if (passageCollection.size() - 1 != i){
                         presentPassageResults += "\n";
                     }
