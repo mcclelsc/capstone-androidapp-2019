@@ -29,12 +29,13 @@ import java.util.Map;
 
 public class Conversation extends AppCompatActivity {
 
+    Assistant chatAssistant;
     RecyclerViewAdapter recyclerViewAdapter;
-    EditText editMessage;
     RecyclerView recyclerView;
+    EditText editMessage;
     ArrayList<String> chatMessageLog;
     ArrayList<PassageDetails> passageCollection;
-    Assistant chatAssistant;
+
     String documentFilename = "";
     String documentFileId = "";
 
@@ -69,6 +70,7 @@ public class Conversation extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAdapter = new RecyclerViewAdapter(this, chatMessageLog);
         recyclerView.setAdapter(recyclerViewAdapter);
+        ((LinearLayoutManager)recyclerView.getLayoutManager()).setStackFromEnd(true);
 
         final Context context = this;
         //When the 'Send' button is clicked, pass context and chat log to MessageWatson AsyncTask
@@ -105,14 +107,14 @@ public class Conversation extends AppCompatActivity {
         private LayoutInflater inflater;
         private ItemClickListener rowClickListener;
 
-        RecyclerViewAdapter(Context context, List<String> data){
+        RecyclerViewAdapter(Context context, List<String> chatData){
             this.inflater = LayoutInflater.from(context);
-            this.chatData = data;
+            this.chatData = chatData;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-            View view = inflater.inflate(R.layout.conversation_row, parent, false);
+            View view = inflater.inflate(R.layout.conversation_row, parent, false);;
             return new ViewHolder(view);
         }
 
