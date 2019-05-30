@@ -285,6 +285,10 @@ public class Conversation extends AppCompatActivity {
                 i.putExtras(generalBundle);
                 startActivity(i);
             }
+            else if (responsePayloadString.equals("Sending you back to the homepage...")){
+                Intent i = new Intent(Conversation.this, MainActivity.class);
+                startActivity(i);
+            }
             //When the chatbot realizes it needs to search for a report...
             else if (responsePayloadString.contains("Give me a moment to find that report.")){
                 //Unpack the response payload
