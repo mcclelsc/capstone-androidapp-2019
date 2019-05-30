@@ -38,6 +38,7 @@ public class Conversation extends AppCompatActivity {
     RecyclerViewAdapter recyclerViewAdapter;
     RecyclerView recyclerView;
     EditText editMessage;
+    TextView txtReportName;
     ArrayList<String> chatMessageLog;
     ArrayList<PassageDetails> passageCollection;
 
@@ -69,6 +70,7 @@ public class Conversation extends AppCompatActivity {
 
         Button sendButton = findViewById(R.id.sendMessage);
         editMessage = findViewById(R.id.editMessage);
+        txtReportName = findViewById(R.id.txtConversationFilename);
         //Chat content will be hosted by a recyclerview, and must be
         //prepared accordingly
         recyclerView = findViewById(R.id.chatBox);
@@ -98,6 +100,11 @@ public class Conversation extends AppCompatActivity {
             //Store the desired report's Watson Discovery ID and filename
             documentFileId = checkBundle.getString("documentId");
             documentFilename = checkBundle.getString("documentFilename");
+            txtReportName.setText(documentFilename);
+        }
+        else{
+            documentFilename = "No Report Chosen";
+            txtReportName.setText(documentFilename);
         }
         //Start the chat
         new StartWatson(context).execute(chatMessageLog);
@@ -235,6 +242,7 @@ public class Conversation extends AppCompatActivity {
                 responsePayloadString = "How many I help you with report " + documentFilename + "?";
             }
 
+
             currentChatLog.add(responsePayloadString);
 
             return currentChatLog;
@@ -248,7 +256,7 @@ public class Conversation extends AppCompatActivity {
 
     private class MessageWatson extends AsyncTask<ArrayList<String>, Void, ArrayList<String>> {
         Context context;
-
+        Boolean changeFilename = false;
         MessageWatson(Context context){
             this.context = context;
         }
@@ -311,6 +319,11 @@ public class Conversation extends AppCompatActivity {
                 //If the report is found, unpack received document id
                 if (splitString[0].equals("reportFound")){
                     documentFileId = splitString[1];
+                    changeFilename = true;
+                }
+                else if (splitString[0].equals("reportFound")){
+                    documentFilename = "No Report Chosen";
+                    changeFilename = true;
                 }
                 try {
                     json.put("message", splitString[0]);
@@ -397,6 +410,9 @@ public class Conversation extends AppCompatActivity {
         protected void onPostExecute(ArrayList<String> currentChatLog) {
             //Update the recycleview, reset the editMessage view
             updateChatbox(context, currentChatLog);
+            if (changeFilename){
+                txtReportName.setText(documentFilename);
+            }
             editMessage.setText("");
         }
 
