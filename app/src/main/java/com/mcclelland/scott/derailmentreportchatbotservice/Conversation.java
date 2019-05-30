@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class Conversation extends AppCompatActivity {
@@ -81,7 +82,14 @@ public class Conversation extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                new MessageWatson(context).execute(chatMessageLog);
+                if (editMessage.getText().toString().equals("") || editMessage.getText().toString().trim().length() == 0){
+                    chatMessageLog.add("Your message did not contain any text. Please provide me with a sentence so I can fulfill your query.");
+                    updateChatbox(context, chatMessageLog);
+                    editMessage.setText("");
+                }
+                else{
+                    new MessageWatson(context).execute(chatMessageLog);
+                }
             }
         });
         //If this Activity is started due to being redirected from the GeneralQueryResultSpecific Activity...
@@ -356,7 +364,7 @@ public class Conversation extends AppCompatActivity {
                     htmlFormattedResult = passageCollection.get(i).getPassageText();
                     for (int j = 0; j < highlightedTermsArray.length(); j++){
                         try{
-                            htmlFormattedResult = htmlFormattedResult.replace(highlightedTermsArray.get(j).toString(), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
+                            htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
                         }catch (JSONException e){
                             throw new RuntimeException(e);
                         }
