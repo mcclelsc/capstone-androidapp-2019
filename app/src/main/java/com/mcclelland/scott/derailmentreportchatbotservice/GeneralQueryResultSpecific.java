@@ -23,7 +23,7 @@ public class GeneralQueryResultSpecific extends AppCompatActivity {
         Button btnStartNewConversation = findViewById(R.id.btnStartNewConversation);
         //Populate empty views with appropriate data
         txtFilename.setText(chosenDocument.getFilename());
-        txtPassageCount.setText(String.valueOf(chosenDocument.getPassageCount()));
+        txtPassageCount.setText(Integer.toString(chosenDocument.getPassageCount()));
         txtText.setText(chosenDocument.getText());
 
         btnStartNewConversation.setOnClickListener(new View.OnClickListener() {
