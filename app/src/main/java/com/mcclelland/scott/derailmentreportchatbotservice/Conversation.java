@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.BackgroundColorSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
 public class Conversation extends AppCompatActivity {
 
     Assistant chatAssistant;
@@ -41,6 +41,7 @@ public class Conversation extends AppCompatActivity {
     TextView txtReportName;
     ArrayList<String> chatMessageLog;
     ArrayList<PassageDetails> passageCollection;
+    ArrayList<ChatMessageRowDetails> messageRowCollection;
 
     String documentFilename = "";
     String documentFileId = "";
@@ -62,11 +63,11 @@ public class Conversation extends AppCompatActivity {
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("X-Watson-Learning-Opt-Out", "true");
-
         chatAssistant.setDefaultHeaders(headers);
         //Watson Assistant Setup Ends
 
         chatMessageLog = new ArrayList<>();
+        messageRowCollection = new ArrayList<>();
 
         Button sendButton = findViewById(R.id.sendMessage);
         editMessage = findViewById(R.id.editMessage);
@@ -171,6 +172,7 @@ public class Conversation extends AppCompatActivity {
                 stringIndexEnd = messageToHighlight.toString().indexOf("</span>", stringIndexEnd);
             }
             holder.rowTextView.setText(messageToHighlight);
+            holder.rowTextView.setGravity(messageRowCollection.get(position).getAlignment());
         }
 
         @Override
@@ -244,7 +246,7 @@ public class Conversation extends AppCompatActivity {
 
 
             currentChatLog.add(responsePayloadString);
-
+            messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
             return currentChatLog;
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
@@ -302,7 +304,9 @@ public class Conversation extends AppCompatActivity {
                 //Unpack the response payload
                 String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
                 currentChatLog.add(enteredMessage);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.RIGHT));
                 currentChatLog.add(splitString[0]);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
                 documentFilename = splitString[1];
                 //Attach the desired filename to the next request
                 try {
@@ -339,6 +343,7 @@ public class Conversation extends AppCompatActivity {
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 currentChatLog.add(responsePayloadString);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
             }
             //When the Watson Assistant determines that the user is ready to make
             //a query about a specific report...
@@ -374,6 +379,7 @@ public class Conversation extends AppCompatActivity {
                 }
                 //Print the passage results to the chat window
                 currentChatLog.add(enteredMessage);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.RIGHT));
                 String htmlFormattedResult;
                 System.out.println(highlightedTermsArray);
                 String presentPassageResults = "The Top Matching Results:\n";
@@ -392,17 +398,21 @@ public class Conversation extends AppCompatActivity {
                     }
                 }
                 currentChatLog.add(presentPassageResults);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
                 //Notify the Watson Assistant that the user has been given the related passages
                 //and to continue the conversation
                 urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 currentChatLog.add(responsePayloadString);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
             }
             //When the Watson Assistant does not need to call Discovery, continue the conversation.
             else{
                 currentChatLog.add(enteredMessage);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.RIGHT));
                 currentChatLog.add(responsePayloadString);
+                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
             }
 
             return currentChatLog;
