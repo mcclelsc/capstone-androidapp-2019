@@ -87,6 +87,7 @@ public class Conversation extends AppCompatActivity {
             public void onClick(View v){
                 if (editMessage.getText().toString().equals("") || editMessage.getText().toString().trim().length() == 0){
                     chatMessageLog.add("Your message did not contain any text. Please provide me with a sentence so I can fulfill your query.");
+                    messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
                     updateChatbox(context, chatMessageLog);
                     editMessage.setText("");
                 }
@@ -116,6 +117,7 @@ public class Conversation extends AppCompatActivity {
     private void updateChatbox(Context context, ArrayList<String> chatMessageLog){
         recyclerViewAdapter = new RecyclerViewAdapter(context, chatMessageLog);
         recyclerView.setAdapter(recyclerViewAdapter);
+        ((LinearLayoutManager)recyclerView.getLayoutManager()).scrollToPositionWithOffset(chatMessageLog.size()-1, 0);
     }
     //Class and supporting interface for the recyclerview
     private interface ItemClickListener {

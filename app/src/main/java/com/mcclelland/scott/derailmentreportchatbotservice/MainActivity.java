@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnStartChat = (Button)findViewById(R.id.startChatButton);
-        Button btnQuery = (Button)findViewById(R.id.queryButton);
+        Button btnStartChat = (Button)findViewById(R.id.btnStartChatButtonMain);
+        Button btnQuery = (Button)findViewById(R.id.btnGeneralQueryMain);
 
         btnStartChat.setOnClickListener(new View.OnClickListener(){
             @Override
