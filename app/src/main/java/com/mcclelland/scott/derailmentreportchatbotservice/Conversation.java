@@ -243,7 +243,7 @@ public class Conversation extends AppCompatActivity {
             //Then update the response here. This data cannot be passed to the
             //Watson Assistant, so the topic report's filename is instead presented here.
             if (responsePayloadString.equals("How may I help you with the chosen report?")){
-                responsePayloadString = "How many I help you with report " + documentFilename + "?";
+                responsePayloadString = "How may I help you with report " + documentFilename + "?";
             }
 
 
@@ -383,20 +383,24 @@ public class Conversation extends AppCompatActivity {
                 currentChatLog.add(enteredMessage);
                 messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.RIGHT));
                 String htmlFormattedResult;
-                System.out.println(highlightedTermsArray);
                 String presentPassageResults = "The Top Matching Results:\n";
-                for (int i = 0; i < passageCollection.size(); i++){
-                    htmlFormattedResult = passageCollection.get(i).getPassageText();
-                    for (int j = 0; j < highlightedTermsArray.length(); j++){
-                        try{
-                            htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
-                        }catch (JSONException e){
-                            throw new RuntimeException(e);
+                if (passageCollection.size() == 0){
+                    presentPassageResults = "No relevant passages could be found.";
+                }
+                else{
+                    for (int i = 0; i < passageCollection.size(); i++){
+                        htmlFormattedResult = passageCollection.get(i).getPassageText();
+                        for (int j = 0; j < highlightedTermsArray.length(); j++){
+                            try{
+                                htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
+                            }catch (JSONException e){
+                                throw new RuntimeException(e);
+                            }
                         }
-                    }
-                    presentPassageResults += "Result " + (i+1) + ":\n" + htmlFormattedResult;
-                    if (passageCollection.size() - 1 != i){
-                        presentPassageResults += "\n";
+                        presentPassageResults += "Result " + (i+1) + ":\n" + htmlFormattedResult;
+                        if (passageCollection.size() - 1 != i){
+                            presentPassageResults += "\n";
+                        }
                     }
                 }
                 currentChatLog.add(presentPassageResults);
