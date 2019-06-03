@@ -41,13 +41,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editGeneralQuery" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSuggestedQueries" />
 
     <Spinner
         android:id="@+id/spinnerSuggestedQueries"
@@ -66,54 +66,24 @@
         android:layout_width="0dp"
         android:layout_height="39dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:text="Having trouble thinking of a good query? Take a look at our suggestions below."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterQueryTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/editGeneralQuery" />
 
     <TextView
         android:id="@+id/textEditGeneralQueryHint"
         android:layout_width="0dp"
         android:layout_height="57dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="120dp"
         android:layout_marginEnd="24dp"
         android:text="By entering a question, phrase or keyword below we can show all of the reports that contain matches to your query."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerSuggestedQueries" />
-
-    <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:layout_editor_absoluteX="190dp"
-        tools:layout_editor_absoluteY="99dp">
-
-        <android.support.design.widget.NavigationView
-            android:id="@+id/navigation_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:menu="@menu/global_nav_items" />
-    </android.support.v4.widget.DrawerLayout>
-
-    <ImageButton
-        android:id="@+id/btnGlobalNav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:background="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/menu_icon" />
+        app:layout_constraintTop_toBottomOf="@+id/enterQueryTitle" />
 
 </android.support.constraint.ConstraintLayout>

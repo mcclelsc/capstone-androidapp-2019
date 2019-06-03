@@ -7,6 +7,7 @@
     android:background="@color/colorConversationBackground"
     tools:context=".Conversation">
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatBox"
         android:layout_width="355dp"
@@ -49,53 +50,22 @@
         android:id="@+id/txtConversationFilenameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="8dp"
         android:text="Report Filename:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnGlobalNav" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtConversationFilename"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="22dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/chatBox"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/txtConversationFilenameTitle"
-        app:layout_constraintTop_toBottomOf="@+id/btnGlobalNav" />
-
-    <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
-
-        <android.support.design.widget.NavigationView
-            android:id="@+id/navigation_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:menu="@menu/global_nav_items" />
-    </android.support.v4.widget.DrawerLayout>
-
-    <ImageButton
-        android:id="@+id/btnGlobalNav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:background="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/menu_icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
