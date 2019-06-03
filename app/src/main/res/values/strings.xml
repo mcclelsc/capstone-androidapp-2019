@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DerailmentReportChatbotService</string>
+    <string name="app_name">Derailment Report Chatbot</string>
     <string-array name="suggested_questions">
         <item>Suggested Questions</item>
         <item>What reports involve dangerous goods?</item>

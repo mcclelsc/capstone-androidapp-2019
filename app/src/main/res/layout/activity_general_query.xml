@@ -9,33 +9,40 @@
 
     <TextView
         android:id="@+id/enterQueryTitle"
-        android:layout_width="156dp"
+        android:layout_width="wrap_content"
         android:layout_height="33dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginBottom="19dp"
-        android:text="Enter Query Below:"
-        app:layout_constraintBottom_toTopOf="@+id/editGeneralQuery"
-        app:layout_constraintStart_toStartOf="@+id/editGeneralQuery"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="General Query Page"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editGeneralQuery"
-        android:layout_width="216dp"
+        android:layout_width="0dp"
         android:layout_height="103dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="Enter Query Here"
         android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterQueryTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/textEditGeneralQueryHint" />
 
     <Button
         android:id="@+id/btnQuerySubmit"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"
@@ -44,14 +51,39 @@
 
     <Spinner
         android:id="@+id/spinnerSuggestedQueries"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="70dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSuggestedQuestionsHint" />
+
+    <TextView
+        android:id="@+id/txtSuggestedQuestionsHint"
+        android:layout_width="0dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="Having trouble thinking of a good query? Take a look at our suggestions below."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editGeneralQuery" />
+
+    <TextView
+        android:id="@+id/textEditGeneralQueryHint"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="24dp"
+        android:text="By entering a question, phrase or keyword below we can show all of the reports that contain matches to your query."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enterQueryTitle" />
 
 </android.support.constraint.ConstraintLayout>
