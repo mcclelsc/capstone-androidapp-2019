@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,6 +157,18 @@ public class Conversation extends AppCompatActivity {
                 stringIndexEnd = message.indexOf("</span>", stringIndexEnd);
 
             }
+
+            stringIndexStart = message.indexOf("<b>", stringIndexStart);
+            stringIndexEnd = message.indexOf("</b>", stringIndexEnd);
+            while (stringIndexStart != -1) {
+                messageToHighlight.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), stringIndexStart+3, stringIndexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                stringIndexStart += 3;
+                stringIndexStart = message.indexOf("<b>", stringIndexStart);
+                stringIndexEnd += 4;
+                stringIndexEnd = message.indexOf("</b>", stringIndexEnd);
+
+            }
+
             stringIndexStart = 0;
             stringIndexEnd = 0;
             stringIndexStart = messageToHighlight.toString().indexOf("<span>", stringIndexStart);
@@ -173,6 +186,25 @@ public class Conversation extends AppCompatActivity {
                 stringIndexEnd = 0;
                 stringIndexEnd = messageToHighlight.toString().indexOf("</span>", stringIndexEnd);
             }
+
+            stringIndexStart = 0;
+            stringIndexEnd = 0;
+            stringIndexStart = messageToHighlight.toString().indexOf("<b>", stringIndexStart);
+
+            while (stringIndexStart != -1){
+                messageToHighlight.delete(stringIndexStart, stringIndexStart+3);
+                stringIndexStart = 0;
+                stringIndexStart = messageToHighlight.toString().indexOf("<b>", stringIndexStart);
+
+            }
+
+            stringIndexEnd = messageToHighlight.toString().indexOf("</b>", stringIndexEnd);
+            while (stringIndexEnd != -1){
+                messageToHighlight.delete(stringIndexEnd, stringIndexEnd+4);
+                stringIndexEnd = 0;
+                stringIndexEnd = messageToHighlight.toString().indexOf("</b>", stringIndexEnd);
+            }
+
             holder.rowTextView.setText(messageToHighlight);
             holder.rowTextView.setGravity(messageRowCollection.get(position).getAlignment());
         }
@@ -297,7 +329,7 @@ public class Conversation extends AppCompatActivity {
                 i.putExtras(generalBundle);
                 startActivity(i);
             }
-            else if (responsePayloadString.equals("Sending you back to the homepage...")){
+            else if (responsePayloadString.equals("conversationComplete")){
                 Intent i = new Intent(Conversation.this, MainActivity.class);
                 startActivity(i);
             }
@@ -397,7 +429,7 @@ public class Conversation extends AppCompatActivity {
                                 throw new RuntimeException(e);
                             }
                         }
-                        presentPassageResults += "Result " + (i+1) + ":\n" + htmlFormattedResult;
+                        presentPassageResults += "\n<b>Result " + (i+1) + ":</b>\n" + htmlFormattedResult;
                         if (passageCollection.size() - 1 != i){
                             presentPassageResults += "\n";
                         }
