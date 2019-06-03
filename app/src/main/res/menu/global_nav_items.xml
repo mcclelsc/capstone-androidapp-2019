@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/loginNavItem"
+        android:title="Log in"/>
     <item android:id="@+id/conversationNavItem"
         android:icon="@drawable/conversation_icon"
         android:title="Start Conversation"/>

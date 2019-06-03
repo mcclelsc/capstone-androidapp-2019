@@ -3,11 +3,17 @@ package com.mcclelland.scott.derailmentreportchatbotservice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -18,10 +24,74 @@ import java.util.ArrayList;
 
 public class GeneralQueryResult extends AppCompatActivity {
 
+    DrawerLayout globalNavDrawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_query_result);
+
+        globalNavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_menu);
+        final ImageButton globalNavImage = (ImageButton)findViewById(R.id.btnGlobalNav);
+
+        globalNavDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View view) {
+                globalNavImage.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View view) {
+                globalNavImage.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.conversationNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(GeneralQueryResult.this, Conversation.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.generalQueryNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(GeneralQueryResult.this, GeneralQuery.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    //case R.id.uploadDocumentNavItem: {
+                    //break;
+                    //}
+                }
+                return true;
+            }
+        });
+
+        globalNavImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                globalNavImage.setVisibility(View.GONE);
+                globalNavDrawerLayout.openDrawer(GravityCompat.END);
+            }
+        });
+
         final Context context = this;
         //Unpack query data from GeneraQuery Activity
         Bundle generalBundle = getIntent().getExtras();

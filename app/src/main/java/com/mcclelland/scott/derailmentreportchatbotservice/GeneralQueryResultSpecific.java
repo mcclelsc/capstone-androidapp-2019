@@ -1,18 +1,88 @@
 package com.mcclelland.scott.derailmentreportchatbotservice;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class GeneralQueryResultSpecific extends AppCompatActivity {
+
+    DrawerLayout globalNavDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_query_result_specific);
+
+        globalNavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_menu);
+        final ImageButton globalNavImage = (ImageButton)findViewById(R.id.btnGlobalNav);
+
+        globalNavDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View view) {
+                globalNavImage.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View view) {
+                globalNavImage.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.conversationNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(GeneralQueryResultSpecific.this, Conversation.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.generalQueryNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(GeneralQueryResultSpecific.this, GeneralQuery.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    //case R.id.uploadDocumentNavItem: {
+                    //break;
+                    //}
+                }
+                return true;
+            }
+        });
+
+        globalNavImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                globalNavImage.setVisibility(View.GONE);
+                globalNavDrawerLayout.openDrawer(GravityCompat.END);
+            }
+        });
+
         //Load in the DocumentDetails object that was selected in the GeneralQueryResult Activity
         final DocumentDetails chosenDocument = (DocumentDetails) getIntent().getSerializableExtra("documentDetails");
         //Load in empty views to be populated based on the DocumentDetails object

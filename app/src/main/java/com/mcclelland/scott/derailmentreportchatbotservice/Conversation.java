@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,10 +18,12 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ibm.cloud.sdk.core.service.security.IamOptions;
@@ -35,6 +41,7 @@ import java.util.regex.Pattern;
 
 public class Conversation extends AppCompatActivity {
 
+    DrawerLayout globalNavDrawerLayout;
     Assistant chatAssistant;
     RecyclerViewAdapter recyclerViewAdapter;
     RecyclerView recyclerView;
@@ -51,6 +58,68 @@ public class Conversation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
+
+        globalNavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_menu);
+        final ImageButton globalNavImage = (ImageButton)findViewById(R.id.btnGlobalNav);
+
+        globalNavDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View view) {
+                globalNavImage.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View view) {
+                globalNavImage.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.conversationNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(Conversation.this, Conversation.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.generalQueryNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(Conversation.this, GeneralQuery.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    //case R.id.uploadDocumentNavItem: {
+                    //break;
+                    //}
+                }
+                return true;
+            }
+        });
+
+        globalNavImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                globalNavImage.setVisibility(View.INVISIBLE);
+                globalNavDrawerLayout.openDrawer(GravityCompat.END);
+            }
+        });
+
         //The Watson Assistant has specific parameters that need to be set
         //so API calls can be sent to the correct chatbot
         //Watson Assistant Setup Begins
