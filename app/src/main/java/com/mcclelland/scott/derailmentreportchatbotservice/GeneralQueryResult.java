@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class GeneralQueryResult extends AppCompatActivity {
     String generalQuery;
+    String middlewareURL = "https://capstone-middleware-2019.herokuapp.com";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,7 @@ public class GeneralQueryResult extends AppCompatActivity {
             String generalQuery = params[0];
             JSONObject json = new JSONObject();
             //Set middleware destination URL
-            String urlString = "https://capstone-middleware-2019.herokuapp.com/generalDiscoveryQuery";
+            String urlString = middlewareURL + "/generalDiscoveryQuery";
             String responsePayloadString = "";
             try {
                 //Set the retrieved query as value of key 'message' in JSON payload

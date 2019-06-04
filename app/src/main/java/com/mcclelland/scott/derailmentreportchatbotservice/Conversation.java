@@ -20,22 +20,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.ibm.cloud.sdk.core.service.security.IamOptions;
-import com.ibm.watson.assistant.v2.Assistant;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Conversation extends AppCompatActivity {
 
-    Assistant chatAssistant;
     RecyclerViewAdapter recyclerViewAdapter;
     RecyclerView recyclerView;
     EditText editMessage;
@@ -47,25 +41,12 @@ public class Conversation extends AppCompatActivity {
     String documentFilename = "";
     String documentFileId = "";
 
+    String middlewareURL = "https://capstone-middleware-2019.herokuapp.com";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
-        //The Watson Assistant has specific parameters that need to be set
-        //so API calls can be sent to the correct chatbot
-        //Watson Assistant Setup Begins
-        IamOptions options = new IamOptions.Builder()
-                .apiKey("jP5yGzV5NNzsfS7NG5xmDg96b9Dj6_t0kug5Kg6nEQUM")
-                .build();
-
-        chatAssistant = new Assistant("2019-02-28", options);
-
-        chatAssistant.setEndPoint("https://gateway.watsonplatform.net/assistant/api");
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("X-Watson-Learning-Opt-Out", "true");
-        chatAssistant.setDefaultHeaders(headers);
-        //Watson Assistant Setup Ends
 
         chatMessageLog = new ArrayList<>();
         messageRowCollection = new ArrayList<>();
@@ -255,7 +236,7 @@ public class Conversation extends AppCompatActivity {
             //Retrieve the chatMessageLog Arraylist and set destination URL
             final ArrayList<String> currentChatLog = params[0];
             String responsePayloadString = "";
-            String urlString = "https://capstone-middleware-2019.herokuapp.com/startConversation";
+            String urlString = middlewareURL + "/startConversation";
             JSONObject json = new JSONObject();
             //If this activity starts from the Main Acitivty, presume fresh conversation.
             //Otherwise, use the chatbot's other entry point to continue the specific question cycle
@@ -315,7 +296,7 @@ public class Conversation extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
             //Send request to the middleware and receive response as a string.
-            String urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
+            String urlString = middlewareURL + "/continueConversation";
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
 
@@ -351,7 +332,7 @@ public class Conversation extends AppCompatActivity {
                 }
                 //Send request to the 'getDocumentId' function, which will return a document ID
                 //based on the filename.
-                urlString = "https://capstone-middleware-2019.herokuapp.com/getDocumentId";
+                urlString = middlewareURL + "/getDocumentId";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 splitString = responsePayloadString.split(";uniqueDelimiter;");
@@ -374,7 +355,7 @@ public class Conversation extends AppCompatActivity {
                 //Appropriate answer if the document was successfully found,
                 //Or no document of that name could be found. The Watson assistant must be informed
                 //so the user's place in the conversation is not lost.
-                urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
+                urlString = middlewareURL + "/continueConversation";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 currentChatLog.add(responsePayloadString);
@@ -390,7 +371,7 @@ public class Conversation extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                urlString = "https://capstone-middleware-2019.herokuapp.com/specificDiscoveryQuery";
+                urlString = middlewareURL + "/specificDiscoveryQuery";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
 
@@ -440,7 +421,7 @@ public class Conversation extends AppCompatActivity {
                 messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
                 //Notify the Watson Assistant that the user has been given the related passages
                 //and to continue the conversation
-                urlString = "https://capstone-middleware-2019.herokuapp.com/continueConversation";
+                urlString = middlewareURL + "/continueConversation";
                 middlewareConnection = new MiddlewareConnector(urlString, json.toString());
                 responsePayloadString = middlewareConnection.connect();
                 currentChatLog.add(responsePayloadString);
