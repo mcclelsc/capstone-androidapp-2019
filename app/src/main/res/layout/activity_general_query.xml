@@ -45,9 +45,9 @@
         android:layout_marginEnd="24dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerSuggestedQueries" />
+        app:layout_constraintTop_toBottomOf="@+id/editGeneralQuery" />
 
     <Spinner
         android:id="@+id/spinnerSuggestedQueries"
@@ -66,24 +66,25 @@
         android:layout_width="0dp"
         android:layout_height="39dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="120dp"
         android:layout_marginEnd="24dp"
         android:text="Having trouble thinking of a good query? Take a look at our suggestions below."
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editGeneralQuery" />
+        app:layout_constraintTop_toBottomOf="@+id/enterQueryTitle" />
 
     <TextView
         android:id="@+id/textEditGeneralQueryHint"
         android:layout_width="0dp"
         android:layout_height="57dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:text="By entering a question, phrase or keyword below we can show all of the reports that contain matches to your query."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterQueryTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSuggestedQueries" />
 
 </android.support.constraint.ConstraintLayout>
