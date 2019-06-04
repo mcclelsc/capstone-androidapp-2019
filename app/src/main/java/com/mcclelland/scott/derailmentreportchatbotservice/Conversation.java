@@ -104,6 +104,7 @@ public class Conversation extends AppCompatActivity {
             documentFileId = checkBundle.getString("documentId");
             documentFilename = checkBundle.getString("documentFilename");
             txtReportName.setText(documentFilename);
+            editMessage.setText(checkBundle.getString("query"));
         }
         else{
             documentFilename = "No Report Chosen";

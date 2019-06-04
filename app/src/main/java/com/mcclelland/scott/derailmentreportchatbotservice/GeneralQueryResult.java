@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class GeneralQueryResult extends AppCompatActivity {
-
+    String generalQuery;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +25,7 @@ public class GeneralQueryResult extends AppCompatActivity {
         final Context context = this;
         //Unpack query data from GeneraQuery Activity
         Bundle generalBundle = getIntent().getExtras();
-        String generalQuery = generalBundle.getString("query");
+        generalQuery = generalBundle.getString("query");
         //Start AsyncTask to query the Watson Discovery Service
         //Context must be passed to update and create new views
         //Depending on data received from Discovery
@@ -120,8 +120,8 @@ public class GeneralQueryResult extends AppCompatActivity {
                     //Apply new view to layout
                     set.applyTo(layout);
                     //If the document's sample text is too large, trim it down to 50 characters
-                    if (documentList.get(i).getText().length() > 50){
-                        exampleText = documentList.get(i).getText().substring(0, 50);
+                    if (documentList.get(i).getText().length() > 80){
+                        exampleText = documentList.get(i).getText().substring(0, 80);
                     }
                     else{
                         exampleText = documentList.get(i).getText();
@@ -138,6 +138,7 @@ public class GeneralQueryResult extends AppCompatActivity {
                                     intent.putExtra("documentDetails", documentList.get(documentKeyPairs.get(j).getDocumentListId()));
                                 }
                             }
+                            intent.putExtra("query", generalQuery);
 
                             startActivity(intent);
                         }

@@ -8,13 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class GeneralQueryResultSpecific extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_query_result_specific);
         //Load in the DocumentDetails object that was selected in the GeneralQueryResult Activity
         final DocumentDetails chosenDocument = (DocumentDetails) getIntent().getSerializableExtra("documentDetails");
+        final String generalQuery = getIntent().getExtras().getString("query");
         //Load in empty views to be populated based on the DocumentDetails object
         TextView txtFilename = findViewById(R.id.txtFilename);
         TextView txtPassageCount = findViewById(R.id.txtPassageCount);
@@ -30,16 +30,17 @@ public class GeneralQueryResultSpecific extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Send this document's Watson Discovery ID and Filename to the Conversation Activity
-                startSpecificConversation(chosenDocument.getId(), chosenDocument.getFilename());
+                startSpecificConversation(chosenDocument.getId(), chosenDocument.getFilename(), generalQuery);
             }
         });
     }
 
     //Packaging data to send to Conversation Activity
-    private void startSpecificConversation(String documentId, String documentFilename){
+    private void startSpecificConversation(String documentId, String documentFilename, String generalQuery){
         Bundle contentForConversation = new Bundle();
         contentForConversation.putString("documentId", documentId);
         contentForConversation.putString("documentFilename", documentFilename);
+        contentForConversation.putString("query", generalQuery);
         Intent intent = new Intent(GeneralQueryResultSpecific.this, Conversation.class);
         intent.putExtras(contentForConversation);
         startActivity(intent);
