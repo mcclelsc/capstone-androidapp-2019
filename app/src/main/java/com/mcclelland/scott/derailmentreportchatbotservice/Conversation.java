@@ -423,7 +423,8 @@ public class Conversation extends AppCompatActivity {
                         htmlFormattedResult = passageCollection.get(i).getPassageText();
                         for (int j = 0; j < highlightedTermsArray.length(); j++){
                             try{
-                                htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
+                                htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)(^)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
+                                htmlFormattedResult = htmlFormattedResult.replaceAll(" (?i)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), " <span>" + highlightedTermsArray.get(j).toString() + "</span>");
                             }catch (JSONException e){
                                 throw new RuntimeException(e);
                             }
