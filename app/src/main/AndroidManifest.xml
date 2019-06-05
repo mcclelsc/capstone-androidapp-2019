@@ -3,6 +3,7 @@
     package="com.mcclelland.scott.derailmentreportchatbotservice">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GeneralQueryResultSpecific"></activity>
+        <activity android:name=".UploadDocument"></activity>
+        <activity android:name=".GeneralQueryResultSpecific" />
         <activity android:name=".GeneralQueryResult" />
         <activity android:name=".GeneralQuery" />
         <activity android:name=".Conversation" />

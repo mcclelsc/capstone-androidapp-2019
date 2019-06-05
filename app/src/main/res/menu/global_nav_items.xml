@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/loginNavItem"
+        android:icon="@drawable/login_icon"
+        android:title="Login"/>
     <item android:id="@+id/conversationNavItem"
         android:icon="@drawable/conversation_icon"
         android:title="Start Conversation"/>
@@ -8,5 +11,5 @@
         android:title="General Query"/>
     <item android:id="@+id/uploadDocumentNavItem"
         android:icon="@drawable/upload_document_icon"
-        android:title="Upload Document"/>
+        android:title="Notify New Document"/>
 </menu>

@@ -21,24 +21,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        globalNavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        globalNavDrawerLayout = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_menu);
-        final ImageButton globalNavImage = (ImageButton)findViewById(R.id.btnGlobalNav);
+        NavigationView navigationView = findViewById(R.id.navigation_menu);
+        final ImageButton globalNavImage = findViewById(R.id.btnGlobalNav);
 
-        final Button btnStartChat = (Button)findViewById(R.id.btnStartChatButtonMain);
-        Button btnQuery = (Button)findViewById(R.id.btnGeneralQueryMain);
+        final Button btnStartChat = findViewById(R.id.btnStartChatButtonMain);
+        Button btnQuery = findViewById(R.id.btnGeneralQueryMain);
+        Button btnUploadDocument = findViewById(R.id.btnUploadDocumentMain);
 
         globalNavDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View view, float v) {
-
+                btnStartChat.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onDrawerOpened(@NonNull View view) {
                 globalNavImage.setVisibility(View.GONE);
-                btnStartChat.setVisibility(View.INVISIBLE);
+
             }
 
             @Override
@@ -71,9 +72,13 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     }
-                    //case R.id.uploadDocumentNavItem: {
-                        //break;
-                    //}
+                    case R.id.uploadDocumentNavItem: {
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavImage.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(MainActivity.this, UploadDocument.class);
+                        startActivity(intent);
+                        break;
+                    }
                 }
                 return true;
             }
@@ -100,6 +105,13 @@ public class MainActivity extends AppCompatActivity {
                 sendToGeneralQuery();
             }
         });
+
+        btnUploadDocument.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                sendToUploadDocument();
+            }
+        });
     }
 
     //Send user directly to conversation
@@ -110,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
     //Send user to the general query activity
     private void sendToGeneralQuery(){
         Intent intent = new Intent(MainActivity.this, GeneralQuery.class);
+        startActivity(intent);
+    }
+    //Send user to the general query activity
+    private void sendToUploadDocument(){
+        Intent intent = new Intent(MainActivity.this, UploadDocument.class);
         startActivity(intent);
     }
 

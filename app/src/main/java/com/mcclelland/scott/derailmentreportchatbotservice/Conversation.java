@@ -33,6 +33,7 @@ public class Conversation extends AppCompatActivity {
     RecyclerViewAdapter recyclerViewAdapter;
     RecyclerView recyclerView;
     EditText editMessage;
+    Button sendButton;
     TextView txtReportName;
     ArrayList<String> chatMessageLog;
     ArrayList<PassageDetails> passageCollection;
@@ -51,7 +52,7 @@ public class Conversation extends AppCompatActivity {
         chatMessageLog = new ArrayList<>();
         messageRowCollection = new ArrayList<>();
 
-        Button sendButton = findViewById(R.id.sendMessage);
+        sendButton = findViewById(R.id.sendMessage);
         editMessage = findViewById(R.id.editMessage);
         txtReportName = findViewById(R.id.txtConversationFilename);
         //Chat content will be hosted by a recyclerview, and must be
@@ -74,6 +75,7 @@ public class Conversation extends AppCompatActivity {
                     editMessage.setText("");
                 }
                 else{
+                    sendButton.setEnabled(false);
                     new MessageWatson(context).execute(chatMessageLog);
                 }
             }
@@ -444,6 +446,7 @@ public class Conversation extends AppCompatActivity {
                 txtReportName.setText(documentFilename);
             }
             editMessage.setText("");
+            sendButton.setEnabled(true);
         }
 
     }
