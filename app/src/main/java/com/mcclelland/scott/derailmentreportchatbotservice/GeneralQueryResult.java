@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -17,12 +18,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class GeneralQueryResult extends AppCompatActivity {
+    ProgressBar generalQueryResultProgressBar;
     String generalQuery;
     String middlewareURL = "https://capstone-middleware-2019.herokuapp.com";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_query_result);
+
+        generalQueryResultProgressBar = findViewById(R.id.generalQueryResultProgressBar);
+
         final Context context = this;
         //Unpack query data from GeneraQuery Activity
         Bundle generalBundle = getIntent().getExtras();
@@ -40,7 +45,7 @@ public class GeneralQueryResult extends AppCompatActivity {
         }
         @Override
         protected void onPreExecute(){
-
+            generalQueryResultProgressBar.setVisibility(View.VISIBLE);
         }
         protected String doInBackground(String... params) {
             //Retrieve query
@@ -94,7 +99,7 @@ public class GeneralQueryResult extends AppCompatActivity {
                     documentList.get(i).setPassageCount(tempPassageCount);
                 }
                 //The current layout has to be stored and cloned so it can be updated with new views
-                ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.activity_general_query_result);
+                ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.activity_general_query_result_interior_layout);
                 ConstraintSet set = new ConstraintSet();
 
                 TextView addedText;
@@ -149,7 +154,7 @@ public class GeneralQueryResult extends AppCompatActivity {
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
-
+            generalQueryResultProgressBar.setVisibility(View.INVISIBLE);
         }
 
     }
