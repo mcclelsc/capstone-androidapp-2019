@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -35,6 +36,8 @@ public class Conversation extends AppCompatActivity {
     EditText editMessage;
     Button sendButton;
     TextView txtReportName;
+    ProgressBar conversationProgressBar;
+
     ArrayList<String> chatMessageLog;
     ArrayList<PassageDetails> passageCollection;
     ArrayList<ChatMessageRowDetails> messageRowCollection;
@@ -55,6 +58,7 @@ public class Conversation extends AppCompatActivity {
         sendButton = findViewById(R.id.sendMessage);
         editMessage = findViewById(R.id.editMessage);
         txtReportName = findViewById(R.id.txtConversationFilename);
+        conversationProgressBar = findViewById(R.id.conversationProgressBar);
         //Chat content will be hosted by a recyclerview, and must be
         //prepared accordingly
         recyclerView = findViewById(R.id.chatBox);
@@ -268,6 +272,7 @@ public class Conversation extends AppCompatActivity {
             return currentChatLog;
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
+            conversationProgressBar.setVisibility(View.GONE);
             //Update recyclerview
             updateChatbox(context, currentChatLog);
         }
@@ -282,7 +287,7 @@ public class Conversation extends AppCompatActivity {
         }
         @Override
         protected void onPreExecute(){
-
+            conversationProgressBar.setVisibility(View.VISIBLE);
         }
         protected ArrayList<String> doInBackground(ArrayList<String>... params) {
             //Unpack the chatMessageLog Arraylist so it can be updated later
@@ -440,6 +445,7 @@ public class Conversation extends AppCompatActivity {
             return currentChatLog;
         }
         protected void onPostExecute(ArrayList<String> currentChatLog) {
+            conversationProgressBar.setVisibility(View.GONE);
             //Update the recycleview, reset the editMessage view
             updateChatbox(context, currentChatLog);
             if (changeFilename){

@@ -68,10 +68,13 @@
         android:id="@+id/editReportDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="Enter Details Here"
         android:inputType="textPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/btnBrowseFile"
-        tools:layout_editor_absoluteX="98dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBrowseFile" />
 </android.support.constraint.ConstraintLayout>
