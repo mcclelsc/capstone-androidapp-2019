@@ -306,7 +306,7 @@ public class Conversation extends AppCompatActivity {
             String urlString = middlewareURL + "/continueConversation";
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
-
+            System.out.println(responsePayloadString);
             //Handling different responses from chatbot received from the middleware
 
             //When the chatbot has identified that the user needs to make
@@ -318,18 +318,28 @@ public class Conversation extends AppCompatActivity {
                 i.putExtras(generalBundle);
                 startActivity(i);
             }
-            else if (responsePayloadString.equals("conversationComplete")){
+            else if (responsePayloadString.equals("doNotSendChatLog")){
                 Intent i = new Intent(Conversation.this, MainActivity.class);
                 startActivity(i);
             }
+            else if (responsePayloadString.equals("sendChatLog")){
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"email"});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Conversation Chat Log");
+                String chatLogFinal = "";
+                for (int j = 0; j < currentChatLog.size()-1; j++){
+                    chatLogFinal += currentChatLog.get(j) + "\n\n";
+                }
+                i.putExtra(Intent.EXTRA_TEXT   , chatLogFinal);
+                startActivityForResult(Intent.createChooser(i, "Send Chat Log"), 1);
+            }
             //When the chatbot realizes it needs to search for a report...
-            else if (responsePayloadString.contains("Give me a moment to find that report.")){
+            else if (responsePayloadString.startsWith("RecognizeReport")){
                 //Unpack the response payload
                 String [] splitString = responsePayloadString.split(";uniqueDelimiter;");
                 currentChatLog.add(enteredMessage);
                 messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.RIGHT));
-                currentChatLog.add(splitString[0]);
-                messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
                 documentFilename = splitString[1];
                 //Attach the desired filename to the next request
                 try {
@@ -456,4 +466,15 @@ public class Conversation extends AppCompatActivity {
         }
 
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent result) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+                Intent i = new Intent(Conversation.this, MainActivity.class);
+                startActivity(i);
+            }
+        }
+        finish();
+    }
+
 }
