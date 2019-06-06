@@ -437,6 +437,21 @@ public class Conversation extends AppCompatActivity {
                 }
                 currentChatLog.add(presentPassageResults);
                 messageRowCollection.add(new ChatMessageRowDetails(messageRowCollection.size(), Gravity.LEFT));
+
+                JSONObject jsonInsert = new JSONObject();
+
+                try {
+                    jsonInsert.put("question", enteredMessage);
+                    jsonInsert.put("answer", presentPassageResults);
+                    jsonInsert.put("reportname", documentFilename);
+                }catch (JSONException e){
+                    throw new RuntimeException(e);
+                }
+
+                urlString = middlewareURL + "/insertQuestion";
+                middlewareConnection = new MiddlewareConnector(urlString, jsonInsert.toString());
+                middlewareConnection.connect();
+
                 //Notify the Watson Assistant that the user has been given the related passages
                 //and to continue the conversation
                 urlString = middlewareURL + "/continueConversation";
