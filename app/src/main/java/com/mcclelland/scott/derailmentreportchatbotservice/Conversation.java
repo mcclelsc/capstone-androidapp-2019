@@ -492,7 +492,6 @@ public class Conversation extends AppCompatActivity {
                     presentPassageResults = "No relevant passages could be found.";
                 }
                 else{
-                    System.out.println(highlightedTermsArray);
                     for (int i = 0; i < passageCollection.size(); i++){
                         htmlFormattedResult = passageCollection.get(i).getPassageText();
                         for (int j = 0; j < highlightedTermsArray.length(); j++){
