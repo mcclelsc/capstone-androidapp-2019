@@ -171,6 +171,9 @@ public class Conversation extends AppCompatActivity {
             documentFilename = "No Report Chosen";
             txtReportName.setText(documentFilename);
         }
+
+        sendButton.setEnabled(false);
+
         //Start the chat
         new StartWatson(context).execute(chatMessageLog);
 
@@ -349,6 +352,7 @@ public class Conversation extends AppCompatActivity {
             conversationProgressBar.setVisibility(View.GONE);
             //Update recyclerview
             updateChatbox(context, currentChatLog);
+            sendButton.setEnabled(true);
         }
 
     }
