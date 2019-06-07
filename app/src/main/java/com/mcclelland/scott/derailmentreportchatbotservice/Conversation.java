@@ -93,21 +93,21 @@ public class Conversation extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.conversationNavItem: {
-                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.START);
                         globalNavImage.setImageResource(R.drawable.menu_icon);
                         Intent intent = new Intent(Conversation.this, Conversation.class);
                         startActivity(intent);
                         break;
                     }
                     case R.id.generalQueryNavItem: {
-                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.START);
                         globalNavImage.setImageResource(R.drawable.menu_icon);
                         Intent intent = new Intent(Conversation.this, GeneralQuery.class);
                         startActivity(intent);
                         break;
                     }
                     case R.id.uploadDocumentNavItem: {
-                        globalNavDrawerLayout.closeDrawer(GravityCompat.END);
+                        globalNavDrawerLayout.closeDrawer(GravityCompat.START);
                         globalNavImage.setImageResource(R.drawable.menu_icon);
                         Intent intent = new Intent(Conversation.this, UploadDocument.class);
                         startActivity(intent);
@@ -122,7 +122,7 @@ public class Conversation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 globalNavImage.setImageResource(R.drawable.close_icon);
-                globalNavDrawerLayout.openDrawer(GravityCompat.END);
+                globalNavDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
