@@ -380,7 +380,6 @@ public class Conversation extends AppCompatActivity {
             String urlString = middlewareURL + "/continueConversation";
             MiddlewareConnector middlewareConnection = new MiddlewareConnector(urlString, json.toString());
             responsePayloadString = middlewareConnection.connect();
-            System.out.println(responsePayloadString);
             //Handling different responses from chatbot received from the middleware
 
             //When the chatbot has identified that the user needs to make
@@ -493,12 +492,14 @@ public class Conversation extends AppCompatActivity {
                     presentPassageResults = "No relevant passages could be found.";
                 }
                 else{
+                    System.out.println(highlightedTermsArray);
                     for (int i = 0; i < passageCollection.size(); i++){
                         htmlFormattedResult = passageCollection.get(i).getPassageText();
                         for (int j = 0; j < highlightedTermsArray.length(); j++){
                             try{
                                 htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)(^)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), "<span>" + highlightedTermsArray.get(j).toString() + "</span>");
                                 htmlFormattedResult = htmlFormattedResult.replaceAll(" (?i)"+ Pattern.quote(highlightedTermsArray.get(j).toString()), " <span>" + highlightedTermsArray.get(j).toString() + "</span>");
+                                htmlFormattedResult = htmlFormattedResult.replaceAll("(?i)\""+ Pattern.quote(highlightedTermsArray.get(j).toString()), "\"<span>" + highlightedTermsArray.get(j).toString() + "</span>");
                             }catch (JSONException e){
                                 throw new RuntimeException(e);
                             }
