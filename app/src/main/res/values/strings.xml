@@ -1,9 +1,3 @@
 <resources>
     <string name="app_name">Derailment Report Chatbot</string>
-    <string-array name="suggested_questions">
-        <item>Suggested Questions</item>
-        <item>What reports involve dangerous goods?</item>
-        <item>What trains were travelling eastward?</item>
-        <item>Reports related to Canadian Pacific Railway (CP)</item>
-    </string-array>
 </resources>

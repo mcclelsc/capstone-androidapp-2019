@@ -33,19 +33,18 @@ public class MainActivity extends AppCompatActivity {
         globalNavDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View view, float v) {
-                btnStartChat.setVisibility(View.INVISIBLE);
+
             }
 
             @Override
             public void onDrawerOpened(@NonNull View view) {
-                globalNavImage.setVisibility(View.GONE);
+                globalNavImage.setImageResource(R.drawable.close_icon);
 
             }
 
             @Override
             public void onDrawerClosed(@NonNull View view) {
-                globalNavImage.setVisibility(View.VISIBLE);
-                btnStartChat.setVisibility(View.VISIBLE);
+                globalNavImage.setImageResource(R.drawable.menu_icon);
             }
 
             @Override
@@ -60,21 +59,21 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.conversationNavItem: {
                         globalNavDrawerLayout.closeDrawer(GravityCompat.END);
-                        globalNavImage.setVisibility(View.VISIBLE);
+                        globalNavImage.setImageResource(R.drawable.menu_icon);
                         Intent intent = new Intent(MainActivity.this, Conversation.class);
                         startActivity(intent);
                         break;
                     }
                     case R.id.generalQueryNavItem: {
                         globalNavDrawerLayout.closeDrawer(GravityCompat.END);
-                        globalNavImage.setVisibility(View.VISIBLE);
+                        globalNavImage.setImageResource(R.drawable.menu_icon);
                         Intent intent = new Intent(MainActivity.this, GeneralQuery.class);
                         startActivity(intent);
                         break;
                     }
                     case R.id.uploadDocumentNavItem: {
                         globalNavDrawerLayout.closeDrawer(GravityCompat.END);
-                        globalNavImage.setVisibility(View.VISIBLE);
+                        globalNavImage.setImageResource(R.drawable.menu_icon);
                         Intent intent = new Intent(MainActivity.this, UploadDocument.class);
                         startActivity(intent);
                         break;
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         globalNavImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                globalNavImage.setVisibility(View.GONE);
+                globalNavImage.setImageResource(R.drawable.close_icon);
                 globalNavDrawerLayout.openDrawer(GravityCompat.END);
             }
         });
