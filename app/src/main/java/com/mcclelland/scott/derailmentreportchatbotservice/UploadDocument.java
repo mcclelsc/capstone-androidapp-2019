@@ -26,7 +26,7 @@ public class UploadDocument extends AppCompatActivity {
 
     DrawerLayout globalNavDrawerLayout;
 
-    String adminEmail = "mcclelsc@shernet.sheridancollege.ca";
+    String adminEmail = "mcclelsc@sheridancollege.ca";
 
     Uri filepath;
     Button btnBrowseFile;
