@@ -31,7 +31,7 @@ public class GeneralQuery extends AppCompatActivity {
 
     DrawerLayout globalNavDrawerLayout;
 
-    String middlewareURL = "https://capstone-middleware-2019.herokuapp.com";
+    String middlewareURL = "https://demo-middleware.herokuapp.com";
     private Boolean realUserSelect = false;
     Spinner spinnerSuggestedQueries;
 
