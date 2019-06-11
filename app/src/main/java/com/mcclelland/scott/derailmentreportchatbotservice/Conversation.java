@@ -53,7 +53,7 @@ public class Conversation extends AppCompatActivity {
     String documentFilename = "";
     String documentFileId = "";
 
-    String middlewareURL = "https://capstone-middleware-2019.herokuapp.com";
+    String middlewareURL = "https://demo-middleware.herokuapp.com/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
