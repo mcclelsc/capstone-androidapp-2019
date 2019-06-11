@@ -29,7 +29,7 @@ public class GeneralQueryResult extends AppCompatActivity {
 
     ProgressBar generalQueryResultProgressBar;
     String generalQuery;
-    String middlewareURL = "https://capstone-middleware-2019.herokuapp.com";
+    String middlewareURL = "https://demo-middleware.herokuapp.com";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
