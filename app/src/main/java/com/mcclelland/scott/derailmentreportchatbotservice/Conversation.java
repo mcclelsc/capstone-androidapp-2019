@@ -52,6 +52,7 @@ public class Conversation extends AppCompatActivity {
 
     String documentFilename = "";
     String documentFileId = "";
+    String chatSessionId = "";
 
     String middlewareURL = "https://demo-middleware.herokuapp.com";
 
@@ -339,8 +340,15 @@ public class Conversation extends AppCompatActivity {
             //If the response is from the 'alreadyHaveDocumentId' path,
             //Then update the response here. This data cannot be passed to the
             //Watson Assistant, so the topic report's filename is instead presented here.
-            if (responsePayloadString.equals("How may I help you with the chosen report?")){
+            if (responsePayloadString.contains("How may I help you with the chosen report?")){
+                String split[] = responsePayloadString.split(";uniqueDelimiter;");
+                chatSessionId = split[1];
                 responsePayloadString = "How may I help you with report " + documentFilename + "?";
+            }
+            else{
+                String split[] = responsePayloadString.split(";uniqueDelimiter;");
+                chatSessionId = split[1];
+                responsePayloadString = split[0];
             }
 
 
@@ -377,6 +385,7 @@ public class Conversation extends AppCompatActivity {
             //for the middleware to receive
             try {
                 json.put("message", enteredMessage);
+                json.put("sessionId", chatSessionId);
             }catch (JSONException e){
                 throw new RuntimeException(e);
             }
